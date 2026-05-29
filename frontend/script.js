@@ -1,18 +1,27 @@
 async function sendMessage() {
+
     const message = document.getElementById('message').value;
 
-    const response = await fetch('http://localhost:5000/update', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message })
-    });
+    try {
 
-    const data = await response.json();
+        const response = await fetch('http://localhost:5000/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message })
+        });
 
-    document.getElementById('result').innerText =
-        data.success
-        ? 'GitHub Updated Successfully'
-        : 'Error';
+        const data = await response.json();
+
+        document.getElementById('result').innerText =
+            data.message || 'Updated Successfully';
+
+    } catch (error) {
+
+        document.getElementById('result').innerText =
+            'Server Error';
+
+        console.error(error);
+    }
 }
