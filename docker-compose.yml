@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   backend:
     build: ./backend
@@ -7,12 +9,42 @@ services:
     volumes:
       - ./backend:/app
       - backend_node_modules:/app/node_modules
+      - ./:/repo
+    networks:
+      - devops-net
+    depends_on:
+      - mongodb
 
   frontend:
     build: ./frontend
     container_name: frontend-container
     ports:
       - "3000:80"
+    networks:
+      - devops-net
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - devops-net
+
+  analytics:
+    build: ./analytics
+    container_name: analytics-container
+    ports:
+      - "8080:8080"
+    networks:
+      - devops-net
 
 volumes:
   backend_node_modules:
+  mongodb_data:
+
+networks:
+  devops-net:
+    driver: bridge
