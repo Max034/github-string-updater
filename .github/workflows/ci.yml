@@ -19,6 +19,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Lowercase Repository Owner
+        id: lowercase
+        run: |
+          echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -31,18 +38,18 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/${{ github.actor }}/github-string-updater-backend:latest
+          tags: ghcr.io/${{ steps.lowercase.outputs.owner }}/github-string-updater-backend:latest
 
       - name: Build and Push Frontend
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
           push: true
-          tags: ghcr.io/${{ github.actor }}/github-string-updater-frontend:latest
+          tags: ghcr.io/${{ steps.lowercase.outputs.owner }}/github-string-updater-frontend:latest
 
       - name: Build and Push Analytics Service
         uses: docker/build-push-action@v4
         with:
           context: ./analytics
           push: true
-          tags: ghcr.io/${{ github.actor }}/github-string-updater-analytics:latest
+          tags: ghcr.io/${{ steps.lowercase.outputs.owner }}/github-string-updater-analytics:latest
