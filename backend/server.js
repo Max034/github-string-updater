@@ -21,6 +21,10 @@ const MessageModel = mongoose.model('Message', MessageSchema);
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.json({ status: 'Backend is running!', database: 'Connected' });
+});
+
 app.post('/update', async (req, res) => {
     const { message } = req.body;
 
